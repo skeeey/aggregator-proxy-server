@@ -1,0 +1,10 @@
+.project
+output
+apiserver.local.config
+.api_violation.report
+vendor
+generate_exes
+generate_files
+.idea
+.ko.yaml
+.build-harness-bootstrap
