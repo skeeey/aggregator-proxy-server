@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/skeeey/aggregator-proxy-server/pkg/api"
+	"github.com/skeeey/aggregator-proxy-server/pkg/server"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -23,6 +25,7 @@ import (
 )
 
 type AggregatorServiceInfoController struct {
+	proxyServer       *server.ProxyServer
 	serviceInfoGetter *getter.AggregatorServiceInfoGetter
 	client            kubernetes.Interface
 	informerFactory   informers.SharedInformerFactory
@@ -33,6 +36,7 @@ type AggregatorServiceInfoController struct {
 }
 
 func NewAggregatorServiceInfoController(
+	proxyServer *server.ProxyServer,
 	client kubernetes.Interface,
 	informerFactory informers.SharedInformerFactory,
 	serviceInfoGetter *getter.AggregatorServiceInfoGetter,
@@ -40,6 +44,7 @@ func NewAggregatorServiceInfoController(
 	configMapInformer := informerFactory.Core().V1().ConfigMaps()
 
 	controller := &AggregatorServiceInfoController{
+		proxyServer:       proxyServer,
 		serviceInfoGetter: serviceInfoGetter,
 		client:            client,
 		informerFactory:   informerFactory,
@@ -174,6 +179,11 @@ func (c *AggregatorServiceInfoController) syncHandler(key string) error {
 
 	aggregatorServiceInfo, err := c.generateAggregatorServiceInfo(aggregatorConfigMap)
 	if err != nil {
+		return err
+	}
+
+	klog.Infof("add subresource %s", name)
+	if err := api.AddSubResource(name, c.serviceInfoGetter, c.proxyServer.GenericAPIServer); err != nil {
 		return err
 	}
 

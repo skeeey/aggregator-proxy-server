@@ -16,12 +16,12 @@ kind: ConfigMap
 metadata:
   labels:
     config: mcm-aggregator
-  name: kubernetes-service-proxy
+  name: aggregator
   namespace: default
 data:
   path: "/api"
   port: "443"
-  secret: "kubernetes-service-proxy"
-  service: "kubernetes"
+  secret: "default/kubernetes-service-proxy"
+  service: "default/kubernetes"
   sub-resource: "/v1"
   use-id: "false"

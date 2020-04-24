@@ -22,13 +22,9 @@ func Run(opts *options.Options, stopCh <-chan struct{}) error {
 		return err
 	}
 
-	serviceInfoGetter := getter.NewAggregatorServiceInfoGetter()
-
 	informerFactory := informers.NewSharedInformerFactory(kubeClient, 10*time.Minute)
-	ctrl := controller.NewAggregatorServiceInfoController(kubeClient, informerFactory, serviceInfoGetter, stopCh)
-	go ctrl.Run()
-	informerFactory.Start(stopCh)
 
+	serviceInfoGetter := getter.NewAggregatorServiceInfoGetter()
 	apiServerConfig, err := opts.APIServerConfig()
 	if err != nil {
 		return err
@@ -37,5 +33,10 @@ func Run(opts *options.Options, stopCh <-chan struct{}) error {
 	if err != nil {
 		return err
 	}
+
+	ctrl := controller.NewAggregatorServiceInfoController(proxyServer, kubeClient, informerFactory, serviceInfoGetter, stopCh)
+	go ctrl.Run()
+	informerFactory.Start(stopCh)
+
 	return proxyServer.Run(stopCh)
 }

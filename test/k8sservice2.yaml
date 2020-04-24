@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    config: mcm-aggregator
+  name: anotheraggregator
+  namespace: default
+data:
+  path: "/api"
+  port: "443"
+  secret: "default/kubernetes-service-proxy"
+  service: "default/kubernetes"
+  sub-resource: "/v1"
+  use-id: "false"

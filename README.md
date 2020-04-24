@@ -6,7 +6,7 @@ curl -v \
     -X POST \
     -d @- \
     -H 'Content-Type: application/json' \
-    http://localhost:8001/apis/aggregation.open-cluster-management.io/v1/clusterstatuses/spokecluster1/aggregator/v1/namespaces/default/configmaps <<'EOF'
+    http://127.0.0.1:8001/apis/aggregation.open-cluster-management.io/v1/clusterstatuses/spokecluster1/aggregator/v1/namespaces/default/configmaps <<'EOF'
 {
   "apiVersion": "v1",
   "kind": "ConfigMap",
@@ -21,4 +21,7 @@ EOF
 
 # query the configmap
 curl -v http://localhost:8001/apis/aggregation.open-cluster-management.io/v1/clusterstatuses/spokecluster1/aggregator/v1/namespaces/default/configmaps/mytestcm
+
+# query the configmap by another
+curl -v http://localhost:8001/apis/aggregation.open-cluster-management.io/v1/clusterstatuses/spokecluster1/anotheraggregator/v1/namespaces/default/configmaps/mytestcm
 ```
